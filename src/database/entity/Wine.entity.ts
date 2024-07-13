@@ -18,8 +18,8 @@ export class Wine {
   @Column('text')
   description: string;
 
-  @Column('text')
-  price: string;
+  @Column('int')
+  price: number;
 
   @ManyToOne((type) => User, (user) => user.wines)
   user: User[];

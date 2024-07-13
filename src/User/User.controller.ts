@@ -1,7 +1,7 @@
+import { IMUser } from './../models/User';
 import { UserService } from './User.services';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UserDTO } from './dto/User.dto';
-import { IMUser } from './interfaces/User.interface';
 
 @Controller()
 export class UserController {
