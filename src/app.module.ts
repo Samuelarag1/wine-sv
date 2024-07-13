@@ -4,6 +4,7 @@ import { User } from 'src/database/entity/User.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { WineModule } from './Wine/Wines.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -19,6 +20,7 @@ import { WineModule } from './Wine/Wines.module';
     }),
     UserModule,
     WineModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

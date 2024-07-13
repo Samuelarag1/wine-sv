@@ -4,6 +4,7 @@ export class createWineDTO {
   year: number;
   price?: number;
   type: string;
+  image: string;
 }
 
 export class updateWineDTO {
@@ -12,4 +13,5 @@ export class updateWineDTO {
   year?: number;
   price?: number;
   type?: string;
+  image: string;
 }
