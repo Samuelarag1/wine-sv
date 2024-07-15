@@ -3,7 +3,7 @@ import { Wine } from './../database/entity/Wine.entity';
 import { IMUser } from './../models/User';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './../database/entity/User.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class UserService {
@@ -12,9 +12,17 @@ export class UserService {
     @InjectRepository(Wine) private wineRepository: Repository<Wine>,
   ) {}
 
-  async create(body: UserDTO) {
-    const userCreated = this.userRepository.create(body);
-    return this.userRepository.save(userCreated);
+  async create(body: UserDTO): Promise<User> {
+    try {
+      const userCreated = this.userRepository.create(body);
+      const response = await this.userRepository.save(userCreated);
+      return response;
+    } catch (error) {
+      throw new HttpException(
+        'Error al crear el usuario: ' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
   async findAll(): Promise<IMUser[]> {
     return this.userRepository.find();

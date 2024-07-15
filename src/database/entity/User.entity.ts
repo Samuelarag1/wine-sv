@@ -16,7 +16,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 20 })
   name: string;
 
   @Column({ unique: true })
@@ -29,7 +29,9 @@ export class User {
   @BeforeInsert()
   async hashPassword() {
     const saltRounds = 10;
-    this.password = await bcrypt.hash(this.password, saltRounds);
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, saltRounds);
+    }
   }
 
   async comparePasword(password: string): Promise<boolean> {
@@ -37,7 +39,10 @@ export class User {
     return await bcrypt.compare(password, this.password);
   }
 
-  @Column()
+  @Column({
+    default:
+      'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1720915200&semt=sph',
+  })
   image: string;
 
   @Column('int')

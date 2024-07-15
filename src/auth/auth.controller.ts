@@ -8,8 +8,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() SignInDTO: Record<string, any>) {
-    console.log('comparando', SignInDTO);
-    return this.authService.Login(SignInDTO.email, SignInDTO.password);
+  signIn(@Body() signInDTO: SignInDTO) {
+    return this.authService.Login(signInDTO.email, signInDTO.password);
   }
 }
