@@ -40,8 +40,7 @@ export class User {
   }
 
   @Column({
-    default:
-      'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1720915200&semt=sph',
+    nullable: true,
   })
   image: string;
 

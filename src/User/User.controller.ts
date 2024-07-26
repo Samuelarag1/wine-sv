@@ -1,17 +1,7 @@
-import { WineServices } from './../Wine/Wine.services';
 import { DeleteResult } from 'typeorm';
 import { IMUser } from './../models/User';
 import { UserService } from './User.services';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserDTO } from './dto/User.dto';
 
 //! Exceptions
@@ -19,13 +9,33 @@ import { HttpNotFound } from 'src/HttpExceptions/Exceptions';
 import { HttpBadRequest } from 'src/HttpExceptions/Exceptions';
 import { Wine } from 'src/database/entity/Wine.entity';
 
+//?
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import multerOptions from './../config/multer.config';
+
 @Controller('users')
 export class UserController {
   constructor(private readonly userServices: UserService) {}
 
   @Post()
-  async create(@Body() createUser: UserDTO) {
-    const user = this.userServices.create(createUser);
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  async create(
+    @Body() createUser: UserDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (file) {
+      const baseUrl = `${process.env.BASE_URL || 'http://localhost:3000'}`; // Asegúrate de definir BASE_URL en tus variables de entorno
+      const imageUrl = `${baseUrl}/upload/${file.filename}`;
+      createUser = { ...createUser, image: imageUrl };
+    }
+
+    const user = await this.userServices.create(createUser);
+
+    if (!user) {
+      throw new HttpBadRequest('Error al crear el usuario');
+    }
+
     return user;
   }
 
