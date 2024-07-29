@@ -5,6 +5,7 @@ export class createWineDTO {
   price?: number;
   type: string;
   image: string;
+  userId?: number;
 }
 
 export class updateWineDTO {

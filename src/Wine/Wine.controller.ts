@@ -1,19 +1,36 @@
-import { IMWines } from './../models/Wine';
-import { Controller, Post, Body, Get } from '@nestjs/common';
-import { WineServices } from './Wine.services.js';
-import { createWineDTO } from './dto/wine.dto.js';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseInterceptors,
+  UploadedFile,
+  Param,
+} from '@nestjs/common';
+import { WineServices } from './Wine.services';
+import { createWineDTO } from './dto/wine.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller()
+@Controller('wines')
 export class WineController {
   constructor(private readonly wineService: WineServices) {}
 
-  @Post('wines')
-  createWine(@Body() createWine: createWineDTO) {
-    this.wineService.create(createWine);
+  @Post()
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @Body() createWineDto: createWineDTO,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return this.wineService.create(createWineDto, image);
+  }
+  @Get()
+  async findAllWines() {
+    return this.wineService.findAll();
   }
 
-  @Get('wines')
-  async findAllWines(): Promise<IMWines[]> {
-    return this.wineService.findAll();
+  @Get(':id')
+  async getWine(@Param('id') id: number) {
+    const wine = await this.wineService.findOne(id);
+    return wine;
   }
 }

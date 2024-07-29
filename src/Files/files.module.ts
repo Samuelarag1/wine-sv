@@ -1,15 +1,26 @@
-import { Files } from '../database/entity/File.entity';
-import { Wine } from '../database/entity/Wine.entity';
-import { User } from '../database/entity/User.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { FilesController } from './files.controller';
-import { FilesService } from './files.service';
+import { MulterModule } from '@nestjs/platform-express';
+import { FilesController } from './Files.controller';
+import { FilesService } from './Files.service';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Wine, Files])],
+  imports: [
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  ],
   controllers: [FilesController],
   providers: [FilesService],
-  exports: [FilesService],
 })
 export class FilesModule {}

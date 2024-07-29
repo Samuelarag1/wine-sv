@@ -6,19 +6,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FilesService } from './files.service';
+import { FilesService } from './Files.service';
 
-@Controller('files')
+@Controller('upload')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
-  @Post('upload')
+  @Post()
   @UseInterceptors(FileInterceptor('image'))
-  async uploadPhoto(
-    @UploadedFile() file,
-    @Body('userId') userId?: number,
-    @Body('wineId') wineId?: number,
-  ) {
-    return this.filesService.uploadPhoto(file, userId, wineId);
+  filesFile(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+    return this.filesService.uploadFile(file, body);
   }
 }

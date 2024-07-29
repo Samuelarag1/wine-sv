@@ -26,6 +26,9 @@ export class Wine {
   @Column('text')
   description: string;
 
+  @Column({ nullable: true })
+  image?: string;
+
   @Column('int')
   price: number;
 
