@@ -1,7 +1,6 @@
 export class UserDTO {
   name?: string;
-  age?: number;
+  age?: string;
   email: string;
   password: string;
-  image?: string;
 }

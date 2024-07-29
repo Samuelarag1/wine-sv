@@ -14,8 +14,8 @@ export class UserService {
 
   async create(body: UserDTO): Promise<User> {
     try {
-      const userCreated = this.userRepository.create(body);
-      const response = await this.userRepository.save(userCreated);
+      const user = this.userRepository.create(body);
+      const response = await this.userRepository.save(user);
       return response;
     } catch (error) {
       throw new HttpException(
@@ -24,6 +24,7 @@ export class UserService {
       );
     }
   }
+
   async findAll(): Promise<IMUser[]> {
     return this.userRepository.find();
   }

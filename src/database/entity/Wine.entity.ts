@@ -1,3 +1,4 @@
+import { Files } from './File.entity';
 import { User } from 'src/database/entity/User.entity';
 import {
   Entity,
@@ -5,6 +6,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -27,13 +29,14 @@ export class Wine {
   @Column('int')
   price: number;
 
-  @Column()
-  image: string;
-
   @Column({ type: 'int', nullable: true })
   userId: number;
 
   @ManyToOne(() => User, (user) => user.wines)
   @JoinColumn({ name: 'userId' })
   user: User[];
+
+  @OneToMany(() => Files, (file) => file.wine)
+  @JoinColumn({ name: 'photoId' })
+  photos: Files[];
 }

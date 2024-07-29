@@ -5,10 +5,12 @@ import {
   OneToMany,
   BeforeInsert,
   Unique,
+  JoinColumn,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import { Wine } from './Wine.entity';
 import * as bcrypt from 'bcrypt';
+import { Files } from './File.entity';
 
 @Entity()
 @Unique(['email'])
@@ -35,18 +37,16 @@ export class User {
   }
 
   async comparePasword(password: string): Promise<boolean> {
-    console.log('comparando');
     return await bcrypt.compare(password, this.password);
   }
 
-  @Column({
-    nullable: true,
-  })
-  image: string;
-
-  @Column('int')
-  age: number;
+  @Column()
+  age: string;
 
   @OneToMany((type) => Wine, (wine) => wine.user)
   wines: Wine[];
+
+  @OneToMany(() => Files, (file) => file.user)
+  @JoinColumn({ name: 'photoId' })
+  photos: Files[];
 }
