@@ -6,6 +6,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { WineServices } from './Wine.services';
 import { createWineDTO } from './dto/wine.dto';
@@ -31,6 +32,11 @@ export class WineController {
   @Get(':id')
   async getWine(@Param('id') id: number) {
     const wine = await this.wineService.findOne(id);
+    return wine;
+  }
+  @Delete(':id')
+  async deleteWine(@Param('id') id: number) {
+    const wine = await this.wineService.removeWine(id);
     return wine;
   }
 }

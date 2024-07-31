@@ -7,6 +7,8 @@ import { Module } from '@nestjs/common';
 import { WineModule } from './Wine/Wines.module';
 import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './Files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -19,6 +21,10 @@ import { FilesModule } from './Files/files.module';
       entities: [User, Wine, Files],
       synchronize: true,
       autoLoadEntities: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '/uploads'),
+      serveRoot: '/uploads',
     }),
     UserModule,
     WineModule,

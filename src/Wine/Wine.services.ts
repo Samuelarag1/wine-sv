@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Wine } from 'src/database/entity/Wine.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createWineDTO } from './dto/wine.dto';
-import { promises as fsPromises } from 'fs';
+import { promises as fsPromises, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 @Injectable()
@@ -20,8 +20,14 @@ export class WineServices {
       throw new Error('No image file provided or file buffer is empty');
     }
 
-    // Use the correct path relative to the project root
-    const uploadPath = join(__dirname, '../../uploads', image.originalname);
+    // Ensure uploads directory exists
+    const uploadDir = join(__dirname, '../../uploads');
+    if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Use relative path for the image
+    const uploadPath = join(uploadDir, image.originalname);
 
     try {
       await fsPromises.writeFile(uploadPath, image.buffer); // Save the image to the specified path
@@ -37,7 +43,9 @@ export class WineServices {
     wine.description = createWineDto.description;
     wine.price = createWineDto.price;
     wine.userId = createWineDto.userId;
-    wine.image = uploadPath; // Store the path of the uploaded image
+    wine.image = `/uploads/${image.originalname}`; // Store the relative path of the uploaded image
+
+    console.log('Wine object:', wine);
     await this.wineRepository.save(wine);
 
     return wine;
