@@ -42,6 +42,7 @@ export class WineServices {
     wine.type = createWineDto.type;
     wine.description = createWineDto.description;
     wine.price = createWineDto.price;
+    wine.grape = createWineDto.grape;
     wine.userId = createWineDto.userId;
     wine.image = `/uploads/${image.originalname}`; // Store the relative path of the uploaded image
 

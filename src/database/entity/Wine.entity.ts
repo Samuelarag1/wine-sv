@@ -24,6 +24,9 @@ export class Wine {
   type: string;
 
   @Column('text')
+  grape: string;
+
+  @Column('text')
   description: string;
 
   @Column({ nullable: true })

@@ -1,3 +1,4 @@
+import { promises as fsPromises, existsSync, mkdirSync } from 'fs';
 import { UserDTO } from './dto/User.dto';
 import { Wine } from './../database/entity/Wine.entity';
 import { IMUser } from './../models/User';
@@ -5,6 +6,8 @@ import { DeleteResult, Repository } from 'typeorm';
 import { User } from './../database/entity/User.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { join } from 'path';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -12,17 +15,42 @@ export class UserService {
     @InjectRepository(Wine) private wineRepository: Repository<Wine>,
   ) {}
 
-  async create(body: UserDTO): Promise<User> {
+  async create(
+    createUserDto: UserDTO,
+    image: Express.Multer.File,
+  ): Promise<IMUser> {
+    if (!image || !image.buffer) {
+      console.log('Cannot upload the image');
+      throw new HttpException('Image upload failed', HttpStatus.BAD_REQUEST);
+    }
+
+    const uploadDir = join(__dirname, '../../uploads');
+    if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const filePath = join(uploadDir, image.originalname);
+
     try {
-      const user = this.userRepository.create(body);
-      const response = await this.userRepository.save(user);
-      return response;
+      await fsPromises.writeFile(filePath, image.buffer);
     } catch (error) {
+      console.log('Error writing file:', error);
       throw new HttpException(
-        'Error al crear el usuario: ' + error.message,
-        HttpStatus.BAD_REQUEST,
+        'Error writing file',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    const user = new User();
+    user.name = createUserDto.name;
+    user.age = createUserDto.age;
+    user.email = createUserDto.email;
+    user.password = createUserDto.password;
+    user.image = `/uploads/${image.originalname}`;
+
+    console.log('User Created:', user);
+
+    return this.userRepository.save(user);
   }
 
   async findAll(): Promise<IMUser[]> {

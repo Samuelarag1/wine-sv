@@ -6,6 +6,7 @@ export class createWineDTO {
   type: string;
   image: string;
   userId?: number;
+  grape?: string;
 }
 
 export class updateWineDTO {
@@ -13,6 +14,7 @@ export class updateWineDTO {
   description?: string;
   year?: number;
   price?: number;
+  grape?: string;
   type?: string;
   image: string;
 }

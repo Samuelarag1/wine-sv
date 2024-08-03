@@ -1,7 +1,17 @@
+import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteResult } from 'typeorm';
 import { IMUser } from './../models/User';
 import { UserService } from './User.services';
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  UploadedFile,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserDTO } from './dto/User.dto';
 
 // Exceptions
@@ -13,8 +23,12 @@ export class UserController {
   constructor(private readonly userServices: UserService) {}
 
   @Post()
-  create(@Body() createUser: UserDTO) {
-    this.userServices.create(createUser);
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @Body() createUser: UserDTO,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return this.userServices.create(createUser, image);
   }
 
   @Get()
