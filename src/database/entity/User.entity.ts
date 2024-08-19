@@ -9,7 +9,8 @@ import {
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import { Wine } from './Wine.entity';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
+
 import { Files } from './File.entity';
 
 @Entity()

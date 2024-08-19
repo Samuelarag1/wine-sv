@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { FilesController } from './Files.controller';
-import { FilesService } from './Files.service';
+import { FilesController } from './files.controller';
+import { FilesService } from './files.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 

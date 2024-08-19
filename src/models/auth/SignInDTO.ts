@@ -1,6 +1,6 @@
 import { IsEmail, IsString } from 'class-validator';
 import { BeforeInsert } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export default class SignInDTO {
   @IsEmail()

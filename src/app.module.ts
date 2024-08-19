@@ -13,15 +13,16 @@ import { join } from 'path';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3308,
-      username: 'root',
-      password: 'admin',
-      database: 'winesdb',
+      host: process.env.DB_HOST || 'mysql_db',
+      port: parseInt(process.env.DB_PORT, 10) || 3306,
+      username: process.env.DB_USER || 'admin',
+      password: process.env.DB_PASSWORD || 'root',
+      database: process.env.DB_NAME || 'winesdb',
       entities: [User, Wine, Files],
-      synchronize: true,
+      synchronize: false,
       autoLoadEntities: true,
     }),
+
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '/uploads'),
       serveRoot: '/uploads',
